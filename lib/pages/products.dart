@@ -1,12 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 import '../widgets/products/products.dart';
+import '../widgets/ui_elements/logout_list_tile.dart';
+import '../scoped-model/main.dart';
 
-class ProductsPage extends StatelessWidget {
 
-  final List<Map<String, dynamic>> products;
+class ProductsPage extends StatefulWidget {
+  final MainModel model;
 
-  ProductsPage(this.products);
+  ProductsPage(this.model);
+
+  @override
+  State<StatefulWidget> createState() {
+    return _ProductPageState();
+  }
+}
+
+class _ProductPageState extends State<ProductsPage> {
+
+  @override
+  initState() {
+    widget.model.fetchProducts();
+    super.initState();
+  }
 
   Widget _buildSideDrawer(BuildContext context) {
     return Drawer(
@@ -22,10 +39,29 @@ class ProductsPage extends StatelessWidget {
             onTap: () {
               Navigator.pushReplacementNamed(context, '/admin');
             },
-          )
+          ),
+          Divider(),
+          LogoutListTile()
         ],
       ),
     );
+  }
+
+  Widget _buildProductsList() {
+    return ScopedModelDescendant<MainModel>(builder: (BuildContext context, Widget child, MainModel model) {
+
+      Widget content = Center(child: Text('No Products Found.'));
+
+      if(model.displayedProducts.length > 0 && !model.isLoading) {
+        content = Products();
+      } else if(model.isLoading) {
+        content = Center(child: CircularProgressIndicator());
+      }
+      return RefreshIndicator(
+          onRefresh: model.fetchProducts,
+          child: content
+      );
+    });
   }
 
   @override
@@ -35,10 +71,15 @@ class ProductsPage extends StatelessWidget {
         appBar: AppBar(
           title: Text('EasyList'),
           actions: <Widget>[
-            IconButton(icon: Icon(Icons.favorite), onPressed: () {})
+            ScopedModelDescendant<MainModel>(builder: (BuildContext context, Widget child, MainModel model) {
+                return IconButton(icon: Icon(model.displayFavouritesOnly ? Icons.favorite : Icons.favorite_border), onPressed: () {
+                  model.toggleDisplayMode();
+                });
+              }
+            )
           ],
         ),
-        body: Products(products)
+        body: _buildProductsList()
     );
   }
 }

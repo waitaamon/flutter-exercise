@@ -1,17 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import '../models/product.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 import '../widgets/ui_elements/title_default.dart';
+import '../scoped-model/main.dart';
 
 class ProductPage extends StatelessWidget {
 
-  final String title;
-  final String imageUrl;
-  final String description;
-  final double price;
+  final Product product;
 
-  ProductPage(this.title, this.imageUrl, this.description, this.price);
+  ProductPage(this.product);
 
   void _showWarningDialog(BuildContext context) {
     showDialog(
@@ -36,7 +36,7 @@ class ProductPage extends StatelessWidget {
     );
   }
 
-  Widget _buildAddressPriceRow() {
+  Widget _buildAddressPriceRow(double price) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -65,32 +65,37 @@ class ProductPage extends StatelessWidget {
         return Future.value(false);
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(title),
-        ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Image.asset(imageUrl),
-            Container(
+          appBar: AppBar(
+            title: Text(product.title),
+          ),
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              FadeInImage(
+                image: NetworkImage(product.image),
+                placeholder: AssetImage('assets/food.jpg'),
+                height: 300.0,
+                fit: BoxFit.cover,
+              ),
+              Container(
+                  padding: EdgeInsets.all(10.0),
+                  child: TitleDefault(product.title)
+              ),
+              Container(
                 padding: EdgeInsets.all(10.0),
-                child: TitleDefault(title)
-            ),
-            Container(
-                padding: EdgeInsets.all(10.0),
-                child: _buildAddressPriceRow(),
-            ),
-            Container(
-                padding: EdgeInsets.all(10.0),
-                child: Text(description,  style: TextStyle(
-                    color: Colors.black54,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w400),)
-            ),
+                child: _buildAddressPriceRow(product.price),
+              ),
+              Container(
+                  padding: EdgeInsets.all(10.0),
+                  child: Text(product.description,  style: TextStyle(
+                      color: Colors.black54,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w400),)
+              ),
 
-          ],
-        ),
-      ),
+            ],
+          ),
+        )
     );
   }
 }
