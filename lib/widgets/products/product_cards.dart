@@ -64,8 +64,7 @@ class ProductCard extends StatelessWidget {
             fit: BoxFit.cover,
           ),
           _buildTitlePriceRow(),
-          AddressTag('Kenyatta Road, Juja Kenya'),
-          Text(product.userEmail),
+          AddressTag(product.location.address),
           _buildActionButtons(context)
         ],
       ),

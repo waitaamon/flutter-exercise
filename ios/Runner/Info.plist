@@ -27,6 +27,12 @@
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UISupportedInterfaceOrientations</key>
+	<key>NSLocationWhenInUseUsageDescription</key>
+    <string>User Location is required to add product</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Enable use for image gallery</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Enable use for camera</string>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
